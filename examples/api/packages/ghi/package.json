@@ -1,0 +1,52 @@
+{
+  "name": "github-insights",
+  "version": "1.0.0",
+  "scripts": {
+    "prebuild": "adio",
+    "build": "webpack --config ./webpack.config.js"
+  },
+  "dependencies": {
+    "@webiny/commodo": "^3.0.1",
+    "@webiny/commodo-fields-storage-db-proxy": "^2.0.3",
+    "@webiny/validation": "^3.0.1",
+    "got": "^10.5.5",
+    "lodash.flow": "^3.5.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-typescript": "^7.8.3",
+    "adio": "^1.0.1",
+    "babel-loader": "^8.0.6",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11"
+  },
+  "adio": {
+    "parser": {
+      "plugins": [
+        "typescript"
+      ]
+    },
+    "ignore": {
+      "src": [
+        "path",
+        "os",
+        "fs",
+        "util",
+        "events",
+        "crypto",
+        "aws-sdk"
+      ],
+      "dependencies": [
+        "@babel/runtime"
+      ],
+      "devDependencies": true
+    },
+    "ignoreDirs": [
+      "node_modules",
+      "build"
+    ],
+    "package": "."
+  }
+}
