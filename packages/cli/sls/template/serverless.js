@@ -1,4 +1,3 @@
-const fs = require("fs");
 const path = require("path");
 const { Component } = require("@serverless/core");
 const { loadEnv } = require("../utils");
@@ -11,22 +10,9 @@ const {
     executeGraph,
     syncState,
     resolveTemplate,
-    getOutputs
+    getOutputs,
+    findTemplate
 } = require("./utils");
-
-const findFile = () => {
-    if (fs.existsSync(`serverless.yml`)) {
-        return path.resolve(`serverless.yml`);
-    }
-
-    if (fs.existsSync(`serverless.yaml`)) {
-        return path.resolve(`serverless.yaml`);
-    }
-
-    throw Error(
-        `Template file was not found! Make sure your serverless file has either ".yml" or ".yaml" extension.`
-    );
-};
 
 const validateInputs = ({ env }) => {
     if (typeof env !== "string" || env.length === 0) {
@@ -41,7 +27,7 @@ class Template extends Component {
         // Load .env.json from cwd (this will change depending on command you ran)
         await loadEnv(path.resolve(".env.json"), inputs.env, { debug: inputs.debug });
 
-        const template = findFile();
+        const template = findTemplate();
 
         if (inputs.alias) {
             return await this.deployAlias(inputs.alias, { ...inputs, template });

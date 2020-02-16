@@ -172,6 +172,23 @@ formBuilder:
       - "@webiny/api-form-builder/plugins"
       - "@webiny/api-form-builder/plugins/useSsrCacheTags"
 
+ghWebhook:
+  watch:
+    paths:
+      - ./packages/ghi/src
+  component: "@webiny/serverless-function"
+  inputs:
+    description: GitHub Insighs Webhook
+    env:
+      DB_PROXY_ARN: ${dbProxy.arn}
+    region: ${vars.region}
+    hook: yarn build
+    root: ./packages/ghi
+    code: ./packages/ghi/build
+    handler: handler.handler
+    memory: 128
+    timeout: 30
+
 api:
   component: "@webiny/serverless-api-gateway"
   inputs:
@@ -181,6 +198,9 @@ api:
       - path: /graphql
         method: ANY
         function: ${gateway}
+      - path: /github-webhooks
+        method: POST
+        function: ${ghWebhook}
 cdn:
   component: "@webiny/serverless-aws-cloudfront"
   inputs:
@@ -192,4 +212,7 @@ cdn:
             ttl: 0
             forward:
               headers: ["Accept", "Accept-Language"]
+            allowedHttpMethods: ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]
+          "/github-webhooks":
+            ttl: 0
             allowedHttpMethods: ["GET", "HEAD", "OPTIONS", "PUT", "POST", "PATCH", "DELETE"]

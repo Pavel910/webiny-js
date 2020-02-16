@@ -1,4 +1,5 @@
 const path = require("path");
+const aliases = require("@webiny/project-utils/aliases/webpack");
 
 module.exports = {
     entry: path.join(__dirname, "src", "handler.ts"),
@@ -21,6 +22,7 @@ module.exports = {
         hints: false
     },
     resolve: {
+        alias: aliases,
         extensions: [".mjs", ".js", ".json", ".ts"]
     },
     // Run babel on all .js files and skip those in node_modules

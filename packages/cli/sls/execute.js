@@ -26,20 +26,23 @@ module.exports = async (inputs, method = "default") => {
         context.debug = require("debug")("webiny");
         process.env.DEBUG = debugValue;
     }
-    const Template = require("./template/serverless.js");
-    const component = new Template(`Webiny.${env}`, context);
-    await component.init();
+    try {
+        const Template = require("./template/serverless.js");
+        const component = new Template(`Webiny.${env}`, context);
+        await component.init();
 
-    const output = await component[method]({ env, debug, alias });
-    if (debug) {
-        // Add an empty line after debug output for nicer output
-        console.log();
+        const output = await component[method]({ env, debug, alias });
+        if (debug) {
+            // Add an empty line after debug output for nicer output
+            console.log();
+        }
+
+        return { output, duration: context._.seconds };
+    } finally {
+        context._.status.running = false;
+        process.stdout.write(ansiEscapes.cursorLeft);
+        process.stdout.write(ansiEscapes.eraseDown);
+        process.stdout.write(ansiEscapes.cursorShow);
+        process.chdir(cwd);
     }
-    context._.status.running = false;
-    process.stdout.write(ansiEscapes.cursorLeft);
-    process.stdout.write(ansiEscapes.eraseDown);
-    process.stdout.write(ansiEscapes.cursorShow);
-    process.chdir(cwd);
-
-    return { output, duration: context._.seconds };
 };
