@@ -1,4 +1,5 @@
-const { join } = require("path");
+const { join, resolve } = require("path");
+const fs = require("fs");
 const { isEmpty, path } = require("ramda");
 const { Graph, alg } = require("graphlib");
 const traverse = require("traverse");
@@ -66,7 +67,7 @@ const validateGraph = graph => {
     }
 };
 
-const getTemplate = async inputs => {
+const getTemplate = async (inputs = {}) => {
     const template = inputs.template || {};
 
     if (typeof template === "string") {
@@ -252,7 +253,7 @@ const executeGraph = async (allComponents, graph, instance, inputs) => {
             console.log();
             console.log(err);
             console.log();
-            process.exit(1);
+            throw err;
         }
 
         graph.removeNode(alias);
@@ -292,6 +293,20 @@ const syncState = async (allComponents, instance) => {
     await instance.save();
 };
 
+const findTemplate = () => {
+    if (fs.existsSync(`serverless.yml`)) {
+        return resolve(`serverless.yml`);
+    }
+
+    if (fs.existsSync(`serverless.yaml`)) {
+        return resolve(`serverless.yaml`);
+    }
+
+    throw Error(
+        `Template file was not found! Make sure your serverless file has either ".yml" or ".yaml" extension.`
+    );
+};
+
 module.exports = {
     getTemplate,
     resolveTemplate,
@@ -300,5 +315,6 @@ module.exports = {
     createGraph,
     executeGraph,
     syncState,
-    getOutputs
+    getOutputs,
+    findTemplate
 };

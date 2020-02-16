@@ -61,6 +61,9 @@ yargs.command(
         yargs.option("force", {
             describe: "Deploy even if component inputs were not changed."
         });
+        yargs.option("watch", {
+            describe: "Watch for changes and redeploy."
+        });
         yargs.option("debug", {
             describe: "Show debug messages.",
             default: false,

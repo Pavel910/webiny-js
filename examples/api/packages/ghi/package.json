@@ -36,7 +36,8 @@
         "util",
         "events",
         "crypto",
-        "aws-sdk"
+        "aws-sdk",
+        "@webiny/project-utils"
       ],
       "dependencies": [
         "@babel/runtime"
